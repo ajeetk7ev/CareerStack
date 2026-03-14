@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+  CLOSED
+}
+
+enum JobVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+  FREELANCE
+}
+
+enum WorkplaceType {
+  ONSITE
+  REMOTE
+  HYBRID
+}
+
+enum ExperienceLevel {
+  FRESHER
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+  MANAGER
+  DIRECTOR
+}
+
+enum CurrencyCode {
+  INR
+  USD
+  EUR
+  GBP
+}
+
+model Job {
+  id                    String            @id @default(cuid())
+  title                 String
+  slug                  String            @unique
+  summary               String?
+  description           String
+  responsibilities      String[]
+  requirements          String[]
+  benefits              String[]
+  preferredQualifications String[]
+  tags                  String[]
+
+  status                JobStatus         @default(DRAFT)
+  visibility            JobVisibility     @default(PUBLIC)
+  employmentType        EmploymentType
+  workplaceType         WorkplaceType
+  experienceLevel       ExperienceLevel
+  minExperienceYears    Float?
+  maxExperienceYears    Float?
+
+  minSalary             Int?
+  maxSalary             Int?
+  currency              CurrencyCode?
+  isSalaryVisible       Boolean           @default(true)
+
+  openingsCount         Int               @default(1)
+  applicationDeadline   DateTime?
+  isUrgent              Boolean           @default(false)
+  isFeatured            Boolean           @default(false)
+
+  country               String?
+  state                 String?
+  city                  String?
+  locationText          String?
+
+  companyId             String
+  companyNameSnapshot   String
+  companySlugSnapshot   String?
+  companyLogoSnapshot   String?
+
+  createdByAuthUserId   String
+  updatedByAuthUserId   String?
+
+  publishedAt           DateTime?
+  closedAt              DateTime?
+
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  skills                JobSkill[]
+
+  @@index([companyId])
+  @@index([createdByAuthUserId])
+  @@index([status])
+  @@index([employmentType])
+  @@index([workplaceType])
+  @@index([experienceLevel])
+  @@index([city])
+  @@index([country])
+  @@index([createdAt])
+  @@index([publishedAt])
+  @@index([applicationDeadline])
+}
+
+model JobSkill {
+  id        String   @id @default(cuid())
+  jobId      String
+  name       String
+  isRequired Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  job        Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([name])
+}
