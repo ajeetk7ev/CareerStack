@@ -185,6 +185,35 @@ export class JobService {
     return job;
   }
 
+  async getInternalJobById(jobId: string) {
+    const job = await this.jobRepository.findJobById(jobId);
+
+    if (
+      !job ||
+      job.status !== JobStatus.PUBLISHED ||
+      job.visibility !== "PUBLIC"
+    ) {
+      throw new AppError("Job not found or not available", 404);
+    }
+
+    return job;
+  }
+
+  async getInternalRecruiterJobById(jobId: string, cookieHeader?: string) {
+    const job = await this.jobRepository.findJobById(jobId);
+
+    if (!job) {
+      throw new AppError("Job not found", 404);
+    }
+
+    await this.companyClientService.verifyMembership(
+      job.companyId,
+      cookieHeader,
+    );
+
+    return job;
+  }
+
   async updateJob(
     authUserId: string,
     companyId: string,

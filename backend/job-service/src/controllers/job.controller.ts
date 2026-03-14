@@ -242,4 +242,41 @@ export class JobController {
       next(error);
     }
   }
+
+  static async getInternalJobById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const job = await jobService.getInternalJobById(
+        (req as any).params.jobId,
+      );
+
+      res
+        .status(200)
+        .json(new ApiResponse(true, JOB_MESSAGES.JOB_FETCHED, job));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getInternalRecruiterJobById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const job = await jobService.getInternalRecruiterJobById(
+        (req as any).params.jobId,
+        req.headers.cookie,
+      );
+
+      res
+        .status(200)
+        .json(new ApiResponse(true, JOB_MESSAGES.JOB_FETCHED, job));
+    } catch (error) {
+      next(error);
+    }
+  }
 }

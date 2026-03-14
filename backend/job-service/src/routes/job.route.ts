@@ -89,4 +89,18 @@ router.delete(
   asyncHandler(JobController.deleteDraftJob),
 );
 
+// Internal routes
+router.get(
+  "/internal/jobs/:jobId",
+  validate(jobIdParamSchema),
+  asyncHandler(JobController.getInternalJobById),
+);
+
+router.get(
+  "/internal/recruiter/jobs/:jobId",
+  asyncHandler(protect),
+  validate(jobIdParamSchema),
+  asyncHandler(JobController.getInternalRecruiterJobById),
+);
+
 export default router;
