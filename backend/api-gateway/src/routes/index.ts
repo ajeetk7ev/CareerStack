@@ -13,11 +13,14 @@ const createServiceProxy = (
   createProxyMiddleware({
     target,
     changeOrigin: true,
-    pathRewrite: (path) => path.replace(basePath, ""),
+    pathRewrite: (path) => `${basePath}${path}`,
     proxyTimeout: 10000,
     timeout: 10000,
     on: {
-      proxyReq: (proxyReq, req) => {
+      proxyReq: (proxyReq, req, res) => {
+        console.log(
+          `[PROXY] Forwarding ${req.method} ${req.url} to ${target}${proxyReq.path}`,
+        );
         const expressReq = req as express.Request;
         if (expressReq.requestId) {
           proxyReq.setHeader("x-request-id", expressReq.requestId);
