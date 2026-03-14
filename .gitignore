@@ -1,0 +1,39 @@
+# dependencies
+node_modules/
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# build folders
+dist/
+build/
+.next/
+out/
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# cache
+.cache/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor files
+.vscode/
+.idea/
+
+# typescript
+*.tsbuildinfo
+
+# temporary files
+tmp/
+temp/
