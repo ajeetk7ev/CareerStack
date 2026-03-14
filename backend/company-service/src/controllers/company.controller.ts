@@ -50,6 +50,31 @@ export class CompanyController {
     }
   }
 
+  static async checkMembership(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!req.user?.userId) {
+        throw new AppError("Unauthorized", 401);
+      }
+
+      const membership = await companyService.checkMembership(
+        (req as any).params.companyId,
+        req.user.userId,
+      );
+
+      res
+        .status(200)
+        .json(
+          new ApiResponse(true, "Membership verified successfully", membership),
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async updateMyCompany(
     req: Request,
     res: Response,

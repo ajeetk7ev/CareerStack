@@ -23,6 +23,11 @@ router.post(
   asyncHandler(CompanyController.createCompany),
 );
 router.get(
+  "/:companyId/membership",
+  asyncHandler(protect),
+  asyncHandler(CompanyController.checkMembership),
+);
+router.get(
   "/me",
   asyncHandler(protect),
   asyncHandler(CompanyController.getMyCompany),

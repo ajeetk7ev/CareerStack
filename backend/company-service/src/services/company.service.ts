@@ -109,6 +109,26 @@ export class CompanyService {
     }
   }
 
+  async checkMembership(companyId: string, authUserId: string) {
+    try {
+      const membership = await this.companyRepository.findMembership(
+        companyId,
+        authUserId,
+      );
+
+      if (!membership) {
+        throw new AppError(
+          "Forbidden: you are not a member of this company",
+          403,
+        );
+      }
+
+      return membership;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async updateMyCompany(
     authUserId: string,
     payload: {
