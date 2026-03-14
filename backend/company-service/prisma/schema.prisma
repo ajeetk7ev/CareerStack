@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum CompanyVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum CompanyMemberRole {
+  OWNER
+  ADMIN
+  RECRUITER
+}
+
+enum CompanyInviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+model Company {
+  id                   String                    @id @default(cuid())
+  name                 String
+  slug                 String                    @unique
+  tagline              String?
+  description          String?
+  website              String?
+  logoUrl              String?
+  bannerUrl            String?
+  industry             String?
+  companySize          String?
+  foundedYear          Int?
+  location             String?
+  email                String?
+  phone                String?
+  verificationStatus   CompanyVerificationStatus @default(PENDING)
+  isActive             Boolean                   @default(true)
+  createdByAuthUserId  String
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+
+  members              CompanyMember[]
+  invites              CompanyInvite[]
+}
+
+model CompanyMember {
+  id          String            @id @default(cuid())
+  companyId   String
+  authUserId  String
+  role        CompanyMemberRole @default(RECRUITER)
+  joinedAt    DateTime          @default(now())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  company     Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, authUserId])
+}
+
+model CompanyInvite {
+  id                String              @id @default(cuid())
+  companyId         String
+  email             String
+  invitedByAuthUserId String
+  role              CompanyMemberRole   @default(RECRUITER)
+  status            CompanyInviteStatus @default(PENDING)
+  token             String              @unique
+  expiresAt         DateTime
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
