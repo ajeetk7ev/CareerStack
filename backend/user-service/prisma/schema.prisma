@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model UserProfile {
+  id               String       @id @default(cuid())
+  authUserId       String       @unique
+  fullName         String
+  headline         String?
+  bio              String?
+  phone            String?
+  location         String?
+  currentCompany   String?
+  currentRole      String?
+  totalExperience  Float?
+  expectedSalary   Float?
+  noticePeriodDays Int?
+  profilePicture   String?
+  resumeUrl        String?
+  githubUrl        String?
+  linkedinUrl      String?
+  portfolioUrl     String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  skills           Skill[]
+  educations       Education[]
+  experiences      Experience[]
+  projects         Project[]
+}
+
+model Skill {
+  id        String      @id @default(cuid())
+  name      String
+  level     String?
+  profileId String
+  createdAt DateTime    @default(now())
+
+  profile   UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Education {
+  id           String      @id @default(cuid())
+  institution  String
+  degree       String
+  fieldOfStudy String?
+  startDate    DateTime?
+  endDate      DateTime?
+  grade        String?
+  description  String?
+  profileId    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  profile      UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id           String      @id @default(cuid())
+  companyName  String
+  role         String
+  employmentType String?
+  location     String?
+  startDate    DateTime?
+  endDate      DateTime?
+  isCurrent    Boolean     @default(false)
+  description  String?
+  profileId    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  profile      UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id           String      @id @default(cuid())
+  title        String
+  description  String?
+  projectUrl   String?
+  githubUrl    String?
+  techStack    String?
+  profileId    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  profile      UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
