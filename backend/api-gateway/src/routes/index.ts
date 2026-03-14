@@ -66,6 +66,10 @@ router.use(
   ),
 );
 router.use(
+  "/companies/:companyId/jobs",
+  createServiceProxy(services.job, "job-service", "/jobs"),
+);
+router.use(
   "/companies",
   createServiceProxy(services.company, "company-service", "/companies"),
 );
