@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use((req, _res, next) => {
-  console.log(`[GATEWAY] ${req.method} ${req.url}`);
+  console.log(`[GATEWAY] ${req.method} ${req.url}`)
   next();
 });
 
