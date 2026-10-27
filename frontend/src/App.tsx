@@ -7,7 +7,7 @@ function App() {
 
   return (
    <div>
-       <Button className='bg-green-400'>Click</Button>
+       <Button className='bg-green-700'>Click</Button>
    </div>
   )
 }
